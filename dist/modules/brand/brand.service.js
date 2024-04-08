@@ -9,24 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModuloinicialModule = exports.ExemploController = void 0;
+exports.BrandService = void 0;
 const common_1 = require("@nestjs/common");
-let ExemploController = class ExemploController {
-    async getExemplo() {
-        return 'Exemplo de rota GET';
+const prismaService_1 = require("../../database/prismaService");
+let BrandService = class BrandService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async create(data) {
+        const brandExists = await this.prisma.brand.findFirst({
+            where: {
+                name: data.name,
+            },
+        });
+        if (brandExists) {
+            throw new Error('Brand already exists');
+        }
+        const brand = await this.prisma.brand.create({
+            data,
+        });
+        return brand;
     }
 };
-exports.ExemploController = ExemploController;
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], ExemploController.prototype, "getExemplo", null);
-exports.ExemploController = ExemploController = __decorate([
-    (0, common_1.Controller)('exemplo')
-], ExemploController);
-class ModuloinicialModule {
-}
-exports.ModuloinicialModule = ModuloinicialModule;
-//# sourceMappingURL=moduloinicial.module.js.map
+exports.BrandService = BrandService;
+exports.BrandService = BrandService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [prismaService_1.PrismaService])
+], BrandService);
+//# sourceMappingURL=brand.service.js.map
